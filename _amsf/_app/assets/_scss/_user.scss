@@ -25,10 +25,31 @@
 //   --fontstack-serif: Georgia, "Hiragino Mincho ProN", serif;
 // }
 
+$secondary_color: #2480E7;
 // EXAMPLE: amsf.github.io custom appearance
 :root {
   --code-color-h: calc(var(--link-color-h) + 30);
   --code-color-s: calc(var(--link-color-s) * .2 + 40%);
+
+
+  .navigation {
+    li {
+      a {
+        &:hover {
+          color: #2480E7
+        }
+        &:focus {
+          color: #2480E7
+        }
+      }
+    }
+  }
+  .current {
+    a {
+      color: #2480E7
+    }
+  }
+
 
   @media (prefers-color-scheme: dark) {
     // Code should be lighter in dark mode
@@ -40,3 +61,21 @@
   font-size: 108%;
   opacity: .8;
 }
+
+nav {
+  ul {
+    a {
+      &:hover { 
+        color: $secondary_color
+      }
+      &:focus {
+        color: $secondary_color
+      }
+    }
+
+    &.current { 
+      color: $secondary_color
+    }
+  }
+}
+

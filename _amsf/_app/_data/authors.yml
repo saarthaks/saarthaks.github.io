@@ -7,10 +7,9 @@
 # {{ author.web }}: used in atom feed
 # {{ author.twitter }}: used by Twitter Cards
 default:
-  name:         Tunghsiao Liu
-  email:        t@sparanoid.com
-  web:          https://sparanoid.com/
-  twitter:      tunghsiao
+  name:         Saarthak Sarup
+  email:        ssarup@stanford.edu
+  web:          https://github.com/saarthaks
 
 tester:
   name:         Tester
