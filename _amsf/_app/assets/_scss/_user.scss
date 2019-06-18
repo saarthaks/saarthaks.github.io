@@ -36,17 +36,27 @@ $secondary_color: #2480E7;
     li {
       a {
         &:hover {
-          color: #2480E7
+          color: $secondary_color
         }
         &:focus {
-          color: #2480E7
+          color: $secondary_color
         }
       }
     }
   }
   .current {
     a {
-      color: #2480E7
+      color: $secondary_color
+    }
+  }
+
+  .content {
+    header {
+      --header-height: 70vh;
+      margin-bottom: 10vmin;
+      .image-title {
+        max-width: 400px;
+      }
     }
   }
 
