@@ -1,4 +1,78 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom"><title>Down the Rabbit Hole</title><subtitle>A Blog by Saarthak Sarup</subtitle><updated>2019-06-19T12:21:11-07:00</updated><id>//</id><generator uri="https://sparanoid.com/lab/amsf/" version="2.0.14">Almace Scaffolding</generator><link rel="alternate" type="text/html" hreflang="en" href="//" /><link rel="self" type="application/atom+xml" href="//feed.xml" /><author><name>Saarthak Sarup</name><uri>//</uri><email>ssarup@stanford.edu</email></author><entry><title>Upgrading Guide from v1 to v2</title><id>//upgrading-from-v1-to-v2.html</id><link rel="alternate" type="text/html" href="//upgrading-from-v1-to-v2.html" /><published>2018-07-23T00:00:00-07:00</published><updated>2019-06-19T10:48:20-07:00</updated><author><name>Saarthak Sarup</name><uri>https://github.com/saarthaks</uri><email>ssarup@stanford.edu</email></author><content type="html" xml:base="//">
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom"><title>Down the Rabbit Hole</title><subtitle>A Blog by Saarthak Sarup</subtitle><updated>2019-07-15T00:19:45-07:00</updated><id>//</id><generator uri="https://sparanoid.com/lab/amsf/" version="2.0.14">Almace Scaffolding</generator><link rel="alternate" type="text/html" hreflang="en" href="//" /><link rel="self" type="application/atom+xml" href="//feed.xml" /><author><name>Saarthak Sarup</name><uri>//</uri><email>ssarup@stanford.edu</email></author><entry><title>Synapses, a biological perspective</title><id>//bio_synapse.html</id><link rel="alternate" type="text/html" href="//bio_synapse.html" /><published>2019-07-08T00:00:00-07:00</published><updated>2019-07-15T00:18:31-07:00</updated><author><name>Saarthak Sarup</name><uri>https://github.com/saarthaks</uri><email>ssarup@stanford.edu</email></author><content type="html" xml:base="//">
+          
+            &lt;style type=&quot;text/css&quot;&gt;
+code.has-jax {font: inherit; font-size: 100%; background: inherit; border: inherit;}
+&lt;/style&gt;
+
+&lt;script type=&quot;text/x-mathjax-config&quot;&gt;
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'] // removed 'code' entry
+    }
+});
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i &lt; all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+&lt;/script&gt;
+
+&lt;script type=&quot;text/javascript&quot; src=&quot;https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_HTML-full&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;In a centralized nervous system, synapses form the interconnects between a collection of neurons and enable signal propagation within neural networks. In the language of artificial neural networks, synapses are abstracted into weights—continuously-valued, unbounded, and arbitrarily precise. But is this enough? Or have we missed functionally-relevent characteristics of biological synapses?&lt;/p&gt;
+
+&lt;p&gt;In this post, I dive into a study of chemical synapses, starting from the biology: what is the synapse, physically, and how does it propagate neural activity? Why are synapses modeled as weights, and what mechanisms govern their plasticity? And finally, I address the shortcomings of classical Hebbian plasticity to introduce higher-order mechanisms for learning with &lt;em&gt;meta-plasticity&lt;/em&gt;.&lt;/p&gt;
+&lt;h3 id=&quot;pictures-and-terms&quot;&gt;Pictures and terms&lt;/h3&gt;
+&lt;p&gt;Before jumping into how synapses work, I’ll lay out some key terms that are essential for understanding what a synapse really is. No discussion here would be complete, or even comprehensible, without illustrations.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/synapse-img.png&quot; alt=&quot;&amp;quot;highlevel-synapse&amp;quot;&quot; /&gt;
+&lt;em&gt;Fig. 1: High-level depiction of an axodendritic synapse (left) and zoomed into a single synapse (right)&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;At the most basic level, an &lt;strong&gt;axodendritic synapse&lt;/strong&gt;, as depicted in Fig. 1, is the juncture at which an action potential flowing along the presynaptic &lt;strong&gt;axon&lt;/strong&gt; is signaled to the postsynaptic &lt;strong&gt;dendrite&lt;/strong&gt;. Synapses in the brain may form not only at the dendrite, but also on a postsynaptic soma or axon, labeled as axosomatic or axoaxonic synapses. I only consider axodendritic synapses here, and thus refer to them without the axodendritic qualifier. At the site of the synapse, the presynaptic axon terminates at an &lt;strong&gt;axon terminal&lt;/strong&gt;. Across a physical gap called the &lt;strong&gt;synaptic cleft&lt;/strong&gt;, the postsynaptic dendrite grows a &lt;strong&gt;spine&lt;/strong&gt;–a short branch with a narrow neck and bulbous head. A single dendritic branch may develop dozens of dendritic spines, giving its neuron hundreds or thousands of different input sources. Furthermore, these input sources are able to act independently: segments of a dendritic branch contain their own protein synthesis machinery for local control of postsynaptic composition at the site of individual synapses.&lt;/p&gt;
+
+&lt;p&gt;Critical to the function of a synapse are &lt;strong&gt;ions&lt;/strong&gt;, which are dissolved in the extracellular fluid, and &lt;strong&gt;neurotransmitters&lt;/strong&gt;: chemicals synthesized within the axon terminal and released into the synaptic cleft for postsynaptic signaling. Of the many ions present in the synaptic cleft, &lt;strong&gt;Ca&lt;sup&gt;2+&lt;/sup&gt;&lt;/strong&gt; ions were found to be essential to neurotransmitter release in a series of experiments by Bernard Katz in 1988 &lt;strong&gt;REF&lt;/strong&gt;. These ions are able to drift into the presynaptic axon terminal through &lt;strong&gt;voltage-gated Ca&lt;sup&gt;2+&lt;/sup&gt; channels&lt;/strong&gt; during an action potential, which depolarizes the presynaptic neuron and builds an electric gradient along which the charged ions flow. Within the axon terminal, neurotransmitters like &lt;strong&gt;glutamate&lt;/strong&gt;, &lt;strong&gt;GABA&lt;/strong&gt;, and &lt;strong&gt;dopamine&lt;/strong&gt; are synthesized and stored in &lt;strong&gt;vesicles&lt;/strong&gt;, enabling efficient transport of discrete quanta of neurotransmitters. Some fraction of the total vesicles may be kept in reserve, while others are circulated and tethered at the &lt;strong&gt;active zone&lt;/strong&gt; of the axon terminal, where they may fuse with the terminal’s plasma membrane to release their contents–neurotransmitters–into the synaptic cleft. There the neurotransmitters begin the slow chemical diffusion to the postsynaptic dendritic spine.&lt;/p&gt;
+
+&lt;p&gt;At the postsynaptic site, concentrated in a region called the &lt;strong&gt;postsynaptic density&lt;/strong&gt;, a variety of &lt;strong&gt;ionotropic receptors&lt;/strong&gt;–chemical structures composed of proteins–bind to specific neurotransmitters and open their ion channels. Thus these receptors directly and rapidly influence their neuron’s conductivity to depolarizing or hyperpolarizing ions like Na&lt;sup&gt;+&lt;/sup&gt;, K&lt;sup&gt;+&lt;/sup&gt;, and Cl&lt;sup&gt;-&lt;/sup&gt;, and generate mV-level deflections in the &lt;strong&gt;postsynaptic potential&lt;/strong&gt; (PSP). Two receptors of particular interest in the context of learning are &lt;strong&gt;AMPA receptors&lt;/strong&gt; (AMPARs) and &lt;strong&gt;NMDA receptors&lt;/strong&gt; (NMDARs), which are both activated by the neurotransmitter glutamate. Both receptors gate channels for Na&lt;sup&gt;+&lt;/sup&gt; ions, and when activated by glutamate, depolorize the dendrite with &lt;strong&gt;excitatory PSPs&lt;/strong&gt; (EPSPs). Ionotropic GABA receptors play a similar role in altering the postsynaptic potential, and when activated by the GABA neurotransmitter, open Cl&lt;sup&gt;-&lt;/sup&gt; channels that hyperpolarize the dendrite with &lt;strong&gt;inhibitory PSPs&lt;/strong&gt; (IPSPs). In contrast, there also exist a secondary form of receptors called &lt;strong&gt;metabotropic receptors&lt;/strong&gt;, which are indirectly linked with ion channels through &lt;strong&gt;secondary messengers&lt;/strong&gt;–&lt;em&gt;intracellular&lt;/em&gt; signaling molecules such as the switch-like G-proteins. This molecules initate signaling cascades which, among other phenomena, can open and close ion channels. Such receptors are much slower to activate and deactivate than their ionotropic counterparts, and can have more widespread effects in the neuron.&lt;/p&gt;
+
+&lt;p&gt;An important chemical reaction throughout the many synaptic mechanisms is protein &lt;strong&gt;phosphorylation&lt;/strong&gt;. In this reaction, phosphate-carrying enzymes called &lt;strong&gt;kinases&lt;/strong&gt;, contribute their phosphate to the protein, resulting in a functional change in the target protein, altering its interaction with other proteins. Kinases thus regulate signaling within neurons, and can have a variety of higher-order effects that go beyond propagating signals across synapses. For example, they can regulate the ratio of synaptic vesicles in the reserve pool to vesicles at the active zone, thus altering the synapse’s ability to propagate eject neurotransmitters from the presynaptic neuron. At the postsynaptic site, protein kinases are also involved in trafficking AMPA receptors to the postsynaptic density, thus altering the sensitivity of the postsynaptic neuron to presynaptic action potentials. Such higher-order effects are examples of &lt;strong&gt;synaptic plasticity&lt;/strong&gt;, whereby electrical and biochemical phenomena alter the efficacy of interneuron communication.&lt;/p&gt;
+&lt;h3 id=&quot;synaptic-function-in-detail&quot;&gt;Synaptic function in detail&lt;/h3&gt;
+&lt;p&gt;Having outlined all the major players involved in synaptic function, I can now explain their interactions in greater detail. The big picture function of a chemical synapse is the unidirectional communication of action potentials from a presynaptic neuron to a postsynaptic neuron. This is not strictly true, as postsynaptic neurons can initiate retrograde signaling upon receiving neurotransmitters from the presynaptic neuron. Nevertheless, these chemical synapses are in contrast to electrical synapses, also known as gap junctions, which enable rapid bidirectional communication between neurons at the expense of increased spatially-correlated neural activity.&lt;/p&gt;
+
+&lt;p&gt;The primary procedure for signaling through chemical synapses is as follows:&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Presynaptic action potentials cause the release of neurotransmitters.&lt;/strong&gt; The propagation of an action potential to the axon terminal opens voltage-gated Ca&lt;sup&gt;2+&lt;/sup&gt; channels, allowing an influx of Ca&lt;sup&gt;2+&lt;/sup&gt; into the presynaptic neuron. RIM proteins are responsible for clustering these calcium channels into the active zone, where vesicles containing neurotransmitters have been tethered by phosphorylated proteins called synapsins. Chemical reactions between SNARE proteins in the vesicle membrane and the inflowing Ca&lt;sup&gt;2+&lt;/sup&gt; ions initiates vesicle fusion with the neuronal membrane, ejecting the neurotransmitters into the synaptic cleft.
+In contrast to this full fusion neurotransmitter release, which requires a lengthy vesicle renewal process, an alternative mechanism called “kiss-and-run” fusion has also been observed. Here, the vesicle opens and closes transiently, allowing first the partial ejection of its contents and then rapid reuse during future action potentials. Though the evidence for the relative abundance of full fusion events and kiss-and-run events is still debated, it is speculated that kiss-and-run fusion may be employed by neurons to conserve scarce vesicular resources.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Neurotransmitter binding at the postsynaptic density alters the postsynaptic potential.&lt;/strong&gt; After the released neurotransmitters have diffused across the synaptic cleft, they are captured by ionotropic and metabotropic receptors. The ensuing changes which take place at the postsynaptic density depend heavily on the bound neurotransmitters. In response to glutamate, AMPARs open their ion channels to sodium and potassium ions which locally depolarize the neuron. NMDARs are also activated by glutamate, but are generally blocked by bound Mg&lt;sup&gt;2+&lt;/sup&gt; ions, preventing ion flow. Once the postsynaptic site has depolarized, however, these ions are expelled by the electric gradient, relieving the block and opening the NMDAR ion channel to Na&lt;sup&gt;+&lt;/sup&gt;, K&lt;sup&gt;+&lt;/sup&gt;, and Ca&lt;sup&gt;2+&lt;/sup&gt; ions. As a result of this additional requirement, NMDARs are often called &lt;em&gt;coincidence detectors&lt;/em&gt;, allowing depolarization and calcium influx only when other inputs transiently depolarize the dendrite.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;That’s the end of the story for signal propagation through chemical synapses: through a spatial summation and temporal convolution of excitatory and inhibitory postsynaptic potentials, a postsynaptic neuron alters its somatic potential and can continue to initiate its own action potential. If these synaptic mechanisms remained constant over time, perhaps a scalar weight might suffice fully characterize a single synapse–the magnitude of postsynaptic potentials in response to a single action potential. It’s clear though that this isn’t the case–synapse weights change in a history-dependent manner. In the next section, I’ll look at the biological mechanisms which give rise to this synaptic plasticity.&lt;/p&gt;
+
+&lt;h3 id=&quot;understanding-synaptic-plasticity&quot;&gt;Understanding synaptic plasticity&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;how do the “weights” change?&lt;/li&gt;
+  &lt;li&gt;STF/STD&lt;/li&gt;
+  &lt;li&gt;LTP/LTD&lt;/li&gt;
+  &lt;li&gt;hebbian plasticity&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;getting-meta-with-plasticity&quot;&gt;Getting &lt;em&gt;meta&lt;/em&gt; with plasticity&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;homeostatic mechanisms for runaway potentiation/depression&lt;/li&gt;
+  &lt;li&gt;biological evidence&lt;/li&gt;
+  &lt;li&gt;bcm rules&lt;/li&gt;
+&lt;/ul&gt;
+
+          
+          
+        
+      
+        </content><summary></summary></entry><entry><title>Upgrading Guide from v1 to v2</title><id>//upgrading-from-v1-to-v2.html</id><link rel="alternate" type="text/html" href="//upgrading-from-v1-to-v2.html" /><published>2018-07-23T00:00:00-07:00</published><updated>2019-06-19T10:48:20-07:00</updated><author><name>Saarthak Sarup</name><uri>https://github.com/saarthaks</uri><email>ssarup@stanford.edu</email></author><content type="html" xml:base="//">
           
             &lt;p&gt;Almace Scaffolding now migrates from Less to Sass, this may make your existing projects non-upgradable, it need quite a lot of work for you to do the migration if you use a custom theme that it’s powered by Less preprocessor. You have to compare your existing projects to &lt;a href=&quot;https://github.com/sparanoid/almace-scaffolding/pull/85&quot;&gt;this Pull Request&lt;/a&gt; side to side to make sure every change you made are sync’ed correctly.&lt;/p&gt;
 
@@ -147,41 +221,6 @@
         
       
         </content><summary>From version 0.0.31, you can now use multiple themes in Almace Scaffolding. See Themes for more information.</summary></entry><entry><title>Welcome</title><id>//welcome.html</id><link rel="alternate" type="text/html" href="//welcome.html" /><published>2014-06-13T00:00:00-07:00</published><updated>2019-06-19T10:48:20-07:00</updated><author><name>Saarthak Sarup</name><uri>https://github.com/saarthaks</uri><email>ssarup@stanford.edu</email></author><content type="html" xml:base="//">
-          
-            &lt;p&gt;AMSF, a.k.a. &lt;strong&gt;Almace Scaffolding&lt;/strong&gt;, is a super-fast Jekyll framework fighting against the website obesity. It supports LiveReload, Sass, HTML minification, inlined stylesheets and more.&lt;/p&gt;
-
-&lt;p class=&quot;largetype&quot;&gt;
-  &lt;a href=&quot;/getting-started.html&quot;&gt;Getting Started →&lt;/a&gt;
-&lt;/p&gt;
-
-&lt;p&gt;Go to the &lt;a href=&quot;https://github.com/sparanoid/almace-scaffolding&quot;&gt;GitHub&lt;/a&gt; page for downloads, bug reports, and feature requests.&lt;/p&gt;
-
-&lt;h2 id=&quot;features&quot;&gt;Features&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Theme switching, you can switch themes with just one command&lt;/li&gt;
-  &lt;li&gt;A basic, fully configured Jekyll setup with well-defined &lt;a href=&quot;https://github.com/sparanoid/almace-scaffolding/blob/master/_app/feed-atom.xml&quot;&gt;Atom feed&lt;/a&gt; and &lt;a href=&quot;https://github.com/sparanoid/almace-scaffolding/blob/master/_app/sitemap.xml&quot;&gt;sitemap&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Almace Scaffolding&lt;/strong&gt; ships a sleek responsive theme &lt;a href=&quot;https://github.com/amsf/amsf-curtana&quot;&gt;Curtana&lt;/a&gt;, a variant of &lt;a href=&quot;https://sparanoid.com/&quot;&gt;sparanoid.com&lt;/a&gt;, looking great on any modern browsers&lt;/li&gt;
-  &lt;li&gt;Every minified page generates only one HTTP request &lt;sup id=&quot;fnref:1&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/sparanoid/almace-scaffolding/blob/master/_config.init.yml&quot;&gt;Tons of configurable settings&lt;/a&gt; for your posts and site customization&lt;/li&gt;
-  &lt;li&gt;Service Worker support for lightning fast experience&lt;/li&gt;
-  &lt;li&gt;Built with Grunt.js for easy development&lt;/li&gt;
-  &lt;li&gt;Travis support&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;footnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:1&quot;&gt;
-      &lt;p&gt;Based on the theme you’re using, theme Curtana generates only one HTTP request for production build when your posts don’t have fancy sliders or other external media files. &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&amp;#xfe0e;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;
-
-          
-          
-        
-      
-        </content><summary>AMSF, a.k.a. Almace Scaffolding, is a super-fast Jekyll framework fighting against the website obesity. It supports LiveReload, Sass, HTML minification, inlined stylesheets and more.</summary></entry><entry><title>Welcome</title><id>//welcome.html</id><link rel="alternate" type="text/html" href="//welcome.html" /><published>2014-06-13T00:00:00-07:00</published><updated>2019-06-19T11:04:19-07:00</updated><author><name>Saarthak Sarup</name><uri>https://github.com/saarthaks</uri><email>ssarup@stanford.edu</email></author><content type="html" xml:base="//">
           
             &lt;p&gt;AMSF, a.k.a. &lt;strong&gt;Almace Scaffolding&lt;/strong&gt;, is a super-fast Jekyll framework fighting against the website obesity. It supports LiveReload, Sass, HTML minification, inlined stylesheets and more.&lt;/p&gt;
 
